@@ -1,0 +1,21 @@
+package com.stock.supply_service.client;
+
+import com.stock.supply_service.external.ProductResponse;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+
+@FeignClient(name = "PRODUCT-SERVICE", url = "${services.product.url}")
+public interface ProductClient {
+
+    @GetMapping("/products/{id}")
+    ProductResponse getProductById(@PathVariable Long id);
+
+    @GetMapping("/products/reference/{reference}")
+    ProductResponse getProductByReference(@PathVariable String reference);
+
+    @PatchMapping("/products/{id}/increase-stock")
+    ProductResponse increaseStock(
+            @PathVariable Long id,
+            @RequestParam Integer quantity
+    );
+}
