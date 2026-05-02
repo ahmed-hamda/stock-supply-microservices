@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/suppliers")
@@ -51,7 +50,7 @@ public class SupplierController {
     @GetMapping("/{id}")
     public ResponseEntity<SupplierResponse> getById(
             @Parameter(description = "Supplier ID", example = "1")
-            @PathVariable UUID id) {
+            @PathVariable Long id) {
 
         if (id == null) {
             throw new IllegalArgumentException("Invalid ID");
@@ -70,7 +69,7 @@ public class SupplierController {
 
     @Operation(summary = "Delete supplier")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
 
         service.deleteSupplier(id);
         return ResponseEntity.noContent().build();

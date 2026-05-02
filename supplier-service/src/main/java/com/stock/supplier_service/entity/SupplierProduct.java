@@ -3,7 +3,6 @@ package com.stock.supplier_service.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
 
 @Entity
 @Table(name = "supplier_products")
@@ -17,7 +16,7 @@ public class SupplierProduct {
     private Long id;
 
     @Column(nullable = false)
-    private UUID supplierId;
+    private Long supplierId;
 
     @Column(nullable = false)
     private String reference;

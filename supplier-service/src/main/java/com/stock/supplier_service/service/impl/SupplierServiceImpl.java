@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierResponse getSupplierById(UUID id) {
+    public SupplierResponse getSupplierById(Long id) {
 
         Supplier supplier = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
@@ -68,7 +67,7 @@ public class SupplierServiceImpl implements SupplierService {
 
 
     @Override
-    public void deleteSupplier(UUID id) {
+    public void deleteSupplier(Long id) {
 
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Supplier not found");

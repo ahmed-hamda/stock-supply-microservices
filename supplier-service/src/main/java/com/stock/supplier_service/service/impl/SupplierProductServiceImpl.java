@@ -3,18 +3,17 @@ package com.stock.supplier_service.service.impl;
 import com.stock.supplier_service.exception.DuplicateResourceException;
 import com.stock.supplier_service.exception.InvalidQuantityException;
 import com.stock.supplier_service.exception.ResourceNotFoundException;
+import com.stock.supplier_service.mapper.SupplierProductMapper;
 import com.stock.supplier_service.repository.SupplierProductRepository;
 import com.stock.supplier_service.repository.SupplierRepository;
 import com.stock.supplier_service.dto.request.SupplierProductRequest;
 import com.stock.supplier_service.dto.response.SupplierProductResponse;
 import com.stock.supplier_service.entity.SupplierProduct;
- import com.stock.supplier_service.mapper.SupplierProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.stock.supplier_service.service.SupplierProductService;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +56,7 @@ public class SupplierProductServiceImpl implements SupplierProductService {
 
 
     @Override
-    public List<SupplierProductResponse> getBySupplier(UUID supplierId) {
+    public List<SupplierProductResponse> getBySupplier(Long supplierId) {
 
         if (!supplierRepository.existsById(supplierId)) {
             throw new ResourceNotFoundException("Supplier not found");
@@ -67,6 +66,41 @@ public class SupplierProductServiceImpl implements SupplierProductService {
                 .stream()
                 .map(SupplierProductMapper::toResponse)
                 .toList();
+    }
+
+    public SupplierProductResponse getById(Long id) {
+        SupplierProduct product = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit fournisseur introuvable avec id : " + id));
+
+        return SupplierProductMapper.toResponse(product);
+    }
+
+    public SupplierProductResponse getBySupplierAndReference(Long supplierId, String reference) {
+        SupplierProduct product = repository.findBySupplierIdAndReference(supplierId, reference)
+                .orElseThrow(() -> new RuntimeException(
+                        "Produit fournisseur introuvable pour supplierId = " + supplierId + " et reference = " + reference
+                ));
+
+        return SupplierProductMapper.toResponse(product);
+    }
+
+    public SupplierProductResponse decreaseStock(Long id, Integer quantity) {
+        if (quantity == null || quantity <= 0) {
+            throw new RuntimeException("La quantité doit être strictement positive");
+        }
+
+        SupplierProduct product = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit fournisseur introuvable avec id : " + id));
+
+        if (product.getAvailableQuantity() < quantity) {
+            throw new RuntimeException("Stock fournisseur insuffisant");
+        }
+
+        product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
+
+        SupplierProduct saved = repository.save(product);
+
+        return SupplierProductMapper.toResponse(saved);
     }
 
 }

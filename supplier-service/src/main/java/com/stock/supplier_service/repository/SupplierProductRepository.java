@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface SupplierProductRepository extends JpaRepository<SupplierProduct, Long> {
 
-    List<SupplierProduct> findBySupplierId(UUID supplierId);
+    List<SupplierProduct> findBySupplierId(Long supplierId);
 
     Optional<SupplierProduct> findByReference(String reference);
+
+    Optional<SupplierProduct> findBySupplierIdAndReference(Long supplierId, String reference);
 }

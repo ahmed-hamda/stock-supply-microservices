@@ -13,7 +13,7 @@ public interface ProductClient {
     @GetMapping("/products/reference/{reference}")
     ProductResponse getProductByReference(@PathVariable String reference);
 
-    @PatchMapping("/products/{id}/increase-stock")
+    @RequestMapping(method = RequestMethod.PATCH, value = "/products/{id}/increase-stock")
     ProductResponse increaseStock(
             @PathVariable Long id,
             @RequestParam Integer quantity
