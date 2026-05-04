@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "PRODUCT-SERVICE", url = "${services.product.url}")
 public interface ProductClient {
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/api/v1/products/{id}")
     ProductResponse getProductById(@PathVariable Long id);
 
-    @GetMapping("/products/reference/{reference}")
+    @GetMapping("/api/v1/products/reference/{reference}")
     ProductResponse getProductByReference(@PathVariable String reference);
 
-    @RequestMapping(method = RequestMethod.PATCH, value = "/products/{id}/increase-stock")
+    @RequestMapping(method = RequestMethod.PATCH, value = "/api/v1/products/{id}/increase-stock")
     ProductResponse increaseStock(
             @PathVariable Long id,
             @RequestParam Integer quantity
