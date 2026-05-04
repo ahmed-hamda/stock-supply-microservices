@@ -19,20 +19,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 
-                        // Swagger public
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // Actuator public pour test
                         .requestMatchers("/actuator/**").permitAll()
 
-                        // GET public
-                        .requestMatchers("GET", "/products/**").permitAll()
+                        .requestMatchers("GET", "api/v1/products/**").permitAll()
 
-                        // POST, PUT, DELETE, PATCH protégés
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
