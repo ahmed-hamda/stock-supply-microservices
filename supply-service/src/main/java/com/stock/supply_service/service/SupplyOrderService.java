@@ -11,8 +11,10 @@ import com.stock.supply_service.entity.SupplyStatus;
 import com.stock.supply_service.exception.*;
 import com.stock.supply_service.external.ProductResponse;
 import com.stock.supply_service.external.SupplierProductResponse;
+import com.stock.supply_service.external.SupplierResponse;
 import com.stock.supply_service.mapper.SupplyMapper;
 import com.stock.supply_service.repository.SupplyOrderRepository;
+import feign.FeignException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -36,6 +38,14 @@ public class SupplyOrderService {
     }
 
     public SupplyOrderResponse createOrder(SupplyOrderRequest request) {
+
+        try {
+            supplierClient.getSupplierById(request.getSupplierId());
+        } catch (FeignException.NotFound ex) {
+            throw new SupplierNotFoundException(request.getSupplierId());
+        }
+
+
         SupplyOrder order = new SupplyOrder();
         order.setSupplierId(request.getSupplierId());
         order.setDate(LocalDate.now());
