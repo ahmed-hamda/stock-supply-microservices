@@ -12,6 +12,7 @@ public class ProductRequest {
 
     @NotBlank
     @Schema(example = "hp002", description = "Unique product reference")
+
     private String reference;
 
     @NotNull

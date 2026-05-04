@@ -17,6 +17,14 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(SupplierNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleSupplierNotFound(SupplierNotFoundException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), "SUPPLIER__NOT_FOUND", ex.getMessage()),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(SupplyOrderAlreadyValidatedException.class)
     public ResponseEntity<ErrorResponse> handleAlreadyValidated(SupplyOrderAlreadyValidatedException ex) {
         return new ResponseEntity<>(

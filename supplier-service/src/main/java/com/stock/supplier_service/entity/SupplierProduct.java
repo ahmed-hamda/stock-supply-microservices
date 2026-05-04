@@ -18,7 +18,7 @@ public class SupplierProduct {
     @Column(nullable = false)
     private Long supplierId;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String reference;
 
     @Column(nullable = false)
