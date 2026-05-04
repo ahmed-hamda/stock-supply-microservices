@@ -1,5 +1,6 @@
 package com.stock.product_service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ public class ProductRequest {
     private String name;
 
     @NotBlank
+    @Schema(example = "hp002", description = "Unique product reference")
     private String reference;
 
     @NotNull
