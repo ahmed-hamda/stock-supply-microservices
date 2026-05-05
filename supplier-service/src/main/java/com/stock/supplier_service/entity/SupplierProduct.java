@@ -5,7 +5,10 @@ import lombok.*;
 
 
 @Entity
-@Table(name = "supplier_products")
+@Table(name = "supplier_products",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"supplierId", "reference"})
+        })
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
@@ -18,7 +21,7 @@ public class SupplierProduct {
     @Column(nullable = false)
     private Long supplierId;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String reference;
 
     @Column(nullable = false)

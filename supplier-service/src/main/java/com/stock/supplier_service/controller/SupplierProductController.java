@@ -129,4 +129,12 @@ public class SupplierProductController {
 
         return ResponseEntity.ok(service.decreaseStock(id, quantity));
     }
+
+
+
+    @GetMapping("/reference/{reference}/cheapest")
+    public SupplierProductResponse getCheapestByReference(@PathVariable String reference) {
+        return service.getCheapestByReference(reference);
+    }
 }
+

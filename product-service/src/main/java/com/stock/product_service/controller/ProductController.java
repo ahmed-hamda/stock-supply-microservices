@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,8 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-
+    @Value("${server.port}")
+    private String serverPort;
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
@@ -162,5 +164,10 @@ public class ProductController {
     @GetMapping("/{id}/check-stock")
     public boolean isStockBelowMin(@PathVariable Long id) {
         return productService.isStockBelowMin(id);
+    }
+
+    @GetMapping("/instance")
+    public String getInstance() {
+        return "Product-service instance running on port: " + serverPort;
     }
 }

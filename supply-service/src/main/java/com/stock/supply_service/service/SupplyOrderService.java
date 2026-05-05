@@ -123,6 +123,7 @@ public class SupplyOrderService {
         }
 
         for (SupplyItem item : order.getItems()) {
+
             ProductResponse product = productClient.getProductById(item.getProductId());
             SupplierProductResponse supplierProduct =
                     supplierClient.getSupplierProductById(item.getSupplierProductId());
@@ -183,4 +184,48 @@ public class SupplyOrderService {
         return supplyOrderRepository.findById(id)
                 .orElseThrow(() -> new SupplyOrderNotFoundException(id));
     }
+
+    public SupplyOrderResponse createAutomaticOrderFromStockLow(
+            Long productId,
+            String reference,
+            Integer currentQuantity,
+            Integer minStock
+    ) {
+        ProductResponse product = productClient.getProductById(productId);
+
+        SupplierProductResponse cheapestSupplierProduct =
+                supplierClient.getCheapestSupplierProductByReference(reference);
+
+        Integer quantityToOrder = minStock - currentQuantity;
+
+        if (quantityToOrder <= 0) {
+            throw new InvalidQuantityException("Le stock n'est pas inférieur au stock minimum");
+        }
+
+        if (cheapestSupplierProduct.getAvailableQuantity() < quantityToOrder) {
+            throw new InsufficientSupplierStockException(cheapestSupplierProduct.getId());
+        }
+
+        SupplyOrder order = new SupplyOrder();
+        order.setSupplierId(cheapestSupplierProduct.getSupplierId());
+        order.setDate(LocalDate.now());
+        order.setStatus(SupplyStatus.CREATED);
+
+        SupplyItem item = new SupplyItem();
+        item.setProductId(product.getId());
+        item.setSupplierProductId(cheapestSupplierProduct.getId());
+        item.setReference(reference);
+        item.setQuantity(quantityToOrder);
+        item.setSupplyOrder(order);
+
+        order.getItems().add(item);
+
+        SupplyOrder savedOrder = supplyOrderRepository.save(order);
+
+        System.out.println("Commande automatique créée pour le produit : " + reference);
+
+        return SupplyMapper.toOrderResponse(savedOrder);
+    }
+
+
 }
