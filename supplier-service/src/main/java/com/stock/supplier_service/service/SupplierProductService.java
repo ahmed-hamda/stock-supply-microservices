@@ -9,4 +9,6 @@ public interface SupplierProductService {
     SupplierProductResponse getByReference(String reference);
 
     List<SupplierProductResponse> getBySupplier(Long supplierId);
+
+    SupplierProductResponse getCheapestByReference(String reference);
 }

@@ -3,9 +3,11 @@ package com.stock.product_service.service;
 import com.stock.product_service.dto.ProductRequest;
 import com.stock.product_service.dto.ProductResponse;
 import com.stock.product_service.entity.Product;
+import com.stock.product_service.event.StockLowEvent;
 import com.stock.product_service.exception.InvalidQuantityException;
 import com.stock.product_service.exception.ProductAlreadyExistsException;
 import com.stock.product_service.exception.ProductNotFoundException;
+import com.stock.product_service.kafka.StockEventProducer;
 import com.stock.product_service.mapper.ProductMapper;
 import com.stock.product_service.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,11 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final StockEventProducer stockEventProducer;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, StockEventProducer stockEventProducer) {
         this.productRepository = productRepository;
+        this.stockEventProducer = stockEventProducer;
     }
 
     public ProductResponse createProduct(ProductRequest request) {
@@ -101,9 +105,20 @@ public class ProductService {
         product.setQuantity(product.getQuantity() - quantity);
 
         Product updatedProduct = productRepository.save(product);
+
+        if (updatedProduct.getQuantity() < updatedProduct.getMinStock()) {
+            StockLowEvent event = new StockLowEvent(
+                    updatedProduct.getId(),
+                    updatedProduct.getReference(),
+                    updatedProduct.getQuantity(),
+                    updatedProduct.getMinStock()
+            );
+
+            stockEventProducer.publishStockLowEvent(event);
+        }
+
         return ProductMapper.toResponse(updatedProduct);
     }
-
     public boolean isStockBelowMin(Long id) {
         Product product = findProductEntityById(id);
         return product.getQuantity() < product.getMinStock();

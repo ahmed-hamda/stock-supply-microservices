@@ -29,12 +29,6 @@ public class SupplierProductServiceImpl implements SupplierProductService {
             throw new ResourceNotFoundException("Supplier not found");
         }
 
-        // RULE: reference unique
-        repository.findByReference(request.getReference())
-                .ifPresent(p -> {
-                    throw new DuplicateResourceException("Reference already exists");
-                });
-
         // RULE: stock >= 0
         if (request.getAvailableQuantity() < 0) {
             throw new InvalidQuantityException("Quantity must be positive");
@@ -66,6 +60,16 @@ public class SupplierProductServiceImpl implements SupplierProductService {
                 .stream()
                 .map(SupplierProductMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    public SupplierProductResponse getCheapestByReference(String reference) {
+        SupplierProduct product = repository.findFirstByReferenceOrderBySupplierPriceAsc(reference)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Aucun produit fournisseur trouvé pour la référence : " + reference
+                ));
+
+        return SupplierProductMapper.toResponse(product);
     }
 
     public SupplierProductResponse getById(Long id) {

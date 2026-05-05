@@ -13,4 +13,6 @@ public interface SupplierProductRepository extends JpaRepository<SupplierProduct
     Optional<SupplierProduct> findByReference(String reference);
 
     Optional<SupplierProduct> findBySupplierIdAndReference(Long supplierId, String reference);
+
+    Optional<SupplierProduct> findFirstByReferenceOrderBySupplierPriceAsc(String reference);
 }

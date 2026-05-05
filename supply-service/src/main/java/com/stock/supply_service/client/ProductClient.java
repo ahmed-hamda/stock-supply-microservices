@@ -4,7 +4,7 @@ import com.stock.supply_service.external.ProductResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "PRODUCT-SERVICE", url = "${services.product.url}")
+@FeignClient(name = "PRODUCT-SERVICE")
 public interface ProductClient {
 
     @GetMapping("/api/v1/products/{id}")

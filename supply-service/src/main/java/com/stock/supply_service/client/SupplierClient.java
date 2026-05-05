@@ -5,7 +5,7 @@ import com.stock.supply_service.external.SupplierResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "SUPPLIER-SERVICE", url = "${services.supplier.url}")
+@FeignClient(name = "SUPPLIER-SERVICE")
 public interface SupplierClient {
 
     @GetMapping("/api/v1/supplier-products/{id}")
@@ -25,4 +25,10 @@ public interface SupplierClient {
             @PathVariable Long id,
             @RequestParam Integer quantity
     );
+
+    @GetMapping("/api/v1/supplier-products/reference/{reference}/cheapest")
+    SupplierProductResponse getCheapestSupplierProductByReference(
+            @PathVariable String reference
+    );
+
 }
